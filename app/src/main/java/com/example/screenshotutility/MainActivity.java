@@ -46,17 +46,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         main = findViewById(R.id.main);
-        imageView = findViewById(R.id.imageView);
         Button btn =findViewById(R.id.full);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setVisibility(View.INVISIBLE);
-                Bitmap b = Screenshot.takeScreenShotOfRootView(imageView);
-                imageView.setImageBitmap(b);
+                findViewById(R.id.ll).setVisibility(View.INVISIBLE);
+                Bitmap b = Screenshot.takeScreenShotOfRootView(main);
+                Toast.makeText(MainActivity.this , "ScreenShot Taken" , Toast.LENGTH_SHORT).show();
                 main.setBackgroundColor(Color.parseColor("#e5ffff"));
                 storeScreenshot(b);
-                view.setVisibility(View.VISIBLE);
+                findViewById(R.id.ll).setVisibility(View.VISIBLE);
             }
         });
 
@@ -114,9 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request.
         }
     }
 
