@@ -52,20 +52,24 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
         }
 
+        startService(new Intent(MainActivity.this , ChatHeadService.class));
+        this.finishAndRemoveTask();
 
         main = findViewById(R.id.main);
-        Button btnFull =findViewById(R.id.full);
+        Button btnFull = findViewById(R.id.full);
         Button btnClip =findViewById(R.id.clip);
 
         btnFull.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startService(new Intent(MainActivity.this , ChatHeadService.class));
+
+
                 findViewById(R.id.ll).setVisibility(View.INVISIBLE);
                 Bitmap b = Screenshot.takeScreenShotOfRootView(main);
                 Toast.makeText(MainActivity.this , "ScreenShot Taken" , Toast.LENGTH_SHORT).show();
-                main.setBackgroundColor(Color.parseColor("#e5ffff"));
                 storeScreenshot(b);
+                main.setBackgroundColor(Color.parseColor("#e5ffff"));
                 findViewById(R.id.ll).setVisibility(View.VISIBLE);
             }
         });

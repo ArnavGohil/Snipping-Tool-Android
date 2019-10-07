@@ -5,17 +5,17 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
-
-import androidx.annotation.Nullable;
+import android.widget.Toast;
 
 public class ChatHeadService extends Service
 {
     private WindowManager windowManager;
-    private ImageView chatHead;
     WindowManager.LayoutParams params;
+    LayoutInflater li ;
+    View myView;
 
     @Override
     public void onCreate() {
@@ -23,8 +23,8 @@ public class ChatHeadService extends Service
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        chatHead = new ImageView(this);
-        chatHead.setImageResource(R.drawable.icon);
+        li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        myView = li.inflate(R.layout.linear_disp, null);
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -37,23 +37,14 @@ public class ChatHeadService extends Service
         params.x = 0;
         params.y = 100;
 
-        //this code is for dragging the chat head
-        chatHead.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                stopService(new Intent(getApplicationContext(), ChatHeadService.class));
-                //TODO
-            }
-        });
-        windowManager.addView(chatHead, params);
+        windowManager.addView(myView, params);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (chatHead != null)
-            windowManager.removeView(chatHead);
+        if (myView != null)
+            windowManager.removeView(myView);
     }
 
     @Override
@@ -61,5 +52,24 @@ public class ChatHeadService extends Service
         // TODO Auto-generated method stub
         return null;
     }
+
+    public void FullC(View view)
+    {
+        Toast.makeText(getApplicationContext() , "Pressed Button 1" , Toast.LENGTH_SHORT).show();
+    }
+
+    public void ClipC(View view)
+    {
+        Toast.makeText(getApplicationContext() , "Pressed Button 2" , Toast.LENGTH_SHORT).show();
+    }
+
+    public void CloseC(View view)
+    {
+        stopService(new Intent(getApplicationContext(), ChatHeadService.class));
+    }
+
+
+
+
 
 }
