@@ -4,6 +4,13 @@
     android:layout_marginBottom="72dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ImageView
+        android:id="@+id/move"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:onClick="MoveC"
+        android:src="@drawable/move" />
+
     <Button
         android:id="@+id/full"
         android:layout_width="100dp"
