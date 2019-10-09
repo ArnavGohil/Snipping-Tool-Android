@@ -69,7 +69,7 @@ public class ChatHeadService extends Service
         stopService(new Intent(getApplicationContext(), ChatHeadService.class));
     }
 
-    public void MoveC(View view)
+   /* public void MoveC(View view)
     {
         Toast.makeText(getApplicationContext() , "Pressed Button for Movement" , Toast.LENGTH_SHORT).show();
         view.setOnTouchListener(new View.OnTouchListener() {
@@ -100,7 +100,7 @@ public class ChatHeadService extends Service
                 return false;
             }
         });
-    }
+    }*/
 
 
 

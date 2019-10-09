@@ -20,10 +20,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
+        else
+        {
+            checkOverlayPermission();
+        }
+
+
+    }
+
+    private void checkOverlayPermission()
+    {
         if (!Settings.canDrawOverlays(this)) {
 
             //If the draw over permission is not available open the settings screen
@@ -32,23 +42,40 @@ public class MainActivity extends AppCompatActivity {
                     Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
         }
+        else
+            startService();
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+            if (Settings.canDrawOverlays(this)) {
+                startService();
+            }
+        }
+    }
+
+    private void startService()
+    {
         startService(new Intent(MainActivity.this, ChatHeadService.class));
         this.finishAndRemoveTask();
-
     }
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 0: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    checkOverlayPermission();
                     return;
-                } else {
+                }
+                else
+                {
                     Toast.makeText(this, "Storage permission is needed to store the ScreenShots", Toast.LENGTH_LONG).show();
                     this.finishAndRemoveTask();
                 }
