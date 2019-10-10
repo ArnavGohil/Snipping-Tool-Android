@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -109,7 +110,7 @@ public class ChatHeadService extends Service {
     }
 
     public void ClipC(View view) {
-        Toast.makeText(getApplicationContext(), MainActivity.width + " x " + MainActivity.height , Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Button 2", Toast.LENGTH_SHORT).show();
     }
 
     public void CloseC(View view) {

@@ -2,16 +2,16 @@ package com.example.screenshotutility;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
+import android.content.res.Configuration;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.view.Display;
 import android.widget.Toast;
 
 import java.io.File;
@@ -21,9 +21,9 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
-    private static final int REQUEST_SCREENSHOT=59706;
+    private static final int REQUEST_SCREENSHOT = 59706;
     private MediaProjectionManager mgr;
-    static int height ,width ;
+    static boolean DeX = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,36 +32,35 @@ public class MainActivity extends AppCompatActivity {
 
         String folder_main = "ScreenShots";
 
-        Display display= getWindowManager().getDefaultDisplay();
-        Point size=new Point();
-
-        display.getRealSize(size);
-
-         width=size.x;
-         height=size.y;
 
         File f = new File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), folder_main);
         if (!f.exists()) {
             f.mkdirs();
         }
 
-        mgr=(MediaProjectionManager)getSystemService(MEDIA_PROJECTION_SERVICE);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-        {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        Configuration config = getResources().getConfiguration();
+        try {
+            Class configClass = config.getClass();
+            if (configClass.getField("SEM_DESKTOP_MODE_ENABLED").getInt(configClass) ==
+                    configClass.getField("semDesktopModeEnabled").getInt(config)) {
+                DeX = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        else
-        {
+
+        mgr = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        } else {
             checkOverlayPermission();
         }
 
 
-
     }
 
-    private void checkOverlayPermission()
-    {
+    private void checkOverlayPermission() {
         if (!Settings.canDrawOverlays(this)) {
 
             //If the draw over permission is not available open the settings screen
@@ -69,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
-        }
-        else
+        } else
             startService();
     }
 
@@ -82,10 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 startService();
             }
         }
-        if (requestCode == REQUEST_SCREENSHOT)
-        {
-            if (resultCode==RESULT_OK) {
-                Intent i=
+        if (requestCode == REQUEST_SCREENSHOT) {
+            if (resultCode == RESULT_OK) {
+                Intent i =
                         new Intent(this, ChatHeadService.class)
                                 .putExtra(ChatHeadService.EXTRA_RESULT_CODE, resultCode)
                                 .putExtra(ChatHeadService.EXTRA_RESULT_INTENT, data);
@@ -97,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void startService()
-    {
+    private void startService() {
         startActivityForResult(mgr.createScreenCaptureIntent(), REQUEST_SCREENSHOT);
     }
 
@@ -109,13 +105,10 @@ public class MainActivity extends AppCompatActivity {
             case 0: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     checkOverlayPermission();
                     return;
-                }
-                else
-                {
+                } else {
                     Toast.makeText(this, "Storage permission is needed to store the ScreenShots", Toast.LENGTH_LONG).show();
                     this.finishAndRemoveTask();
                 }
