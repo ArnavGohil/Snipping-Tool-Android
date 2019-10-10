@@ -21,9 +21,8 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
-
-    public static DisplayMetrics dm = new DisplayMetrics();
-    public static MediaProjectionManager mProjectionManager;
+    private static final int REQUEST_SCREENSHOT=59706;
+    private MediaProjectionManager mgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +36,7 @@ public class MainActivity extends AppCompatActivity {
             f.mkdirs();
         }
 
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mProjectionManager =
-                (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        mgr=(MediaProjectionManager)getSystemService(MEDIA_PROJECTION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
@@ -49,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         {
             checkOverlayPermission();
         }
+
 
 
     }
@@ -75,12 +73,24 @@ public class MainActivity extends AppCompatActivity {
                 startService();
             }
         }
+        if (requestCode == REQUEST_SCREENSHOT)
+        {
+            if (resultCode==RESULT_OK) {
+                Intent i=
+                        new Intent(this, ChatHeadService.class)
+                                .putExtra(ChatHeadService.EXTRA_RESULT_CODE, resultCode)
+                                .putExtra(ChatHeadService.EXTRA_RESULT_INTENT, data);
+
+                startService(i);
+            }
+        }
+
+        finish();
     }
 
     private void startService()
     {
-        startService(new Intent(MainActivity.this, ChatHeadService.class));
-        this.finishAndRemoveTask();
+        startActivityForResult(mgr.createScreenCaptureIntent(), REQUEST_SCREENSHOT);
     }
 
 
