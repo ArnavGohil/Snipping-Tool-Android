@@ -38,15 +38,16 @@ public class ImageTransmogrifier implements ImageReader.OnImageAvailableListener
     Display display=svc.getWindowManager().getDefaultDisplay();
     Point size=new Point();
 
-    display.getSize(size);
+    display.getRealSize(size);
 
+    //For Normal Mobile .
     int width=size.x;
     int height=size.y;
 
-    while (width*height > (2<<19)) {
-      width=width>>1;
-      height=height>>1;
-    }
+    //For Dex Mode .
+//    int width=1920;
+//    int height=1080;
+
 
     this.width=width;
     this.height=height;
@@ -70,9 +71,8 @@ public class ImageTransmogrifier implements ImageReader.OnImageAvailableListener
       int rowPadding=rowStride - pixelStride * width;
       int bitmapWidth=width + rowPadding / pixelStride;
 
-      if (latestBitmap == null ||
-          latestBitmap.getWidth() != bitmapWidth ||
-          latestBitmap.getHeight() != height) {
+      if (latestBitmap == null || latestBitmap.getWidth() != bitmapWidth || latestBitmap.getHeight() != height)
+      {
         if (latestBitmap != null) {
           latestBitmap.recycle();
         }

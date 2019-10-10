@@ -109,7 +109,7 @@ public class ChatHeadService extends Service {
     }
 
     public void ClipC(View view) {
-        Toast.makeText(getApplicationContext(), "Pressed Button 2", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), MainActivity.width + " x " + MainActivity.height , Toast.LENGTH_SHORT).show();
     }
 
     public void CloseC(View view) {
@@ -219,7 +219,7 @@ public class ChatHeadService extends Service {
 
         try {
             out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
