@@ -2,14 +2,24 @@ package com.example.screenshotutility;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class ChatHeadService extends Service
 {
@@ -17,6 +27,7 @@ public class ChatHeadService extends Service
     WindowManager.LayoutParams params;
     LayoutInflater li ;
     View myView;
+    File file ;
 
     @Override
     public void onCreate() {
@@ -56,7 +67,7 @@ public class ChatHeadService extends Service
 
     public void FullC(View view)
     {
-        Toast.makeText(getApplicationContext() , "Pressed Button 1" , Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext() , MainActivity.dm.heightPixels + " x " + MainActivity.dm.widthPixels , Toast.LENGTH_SHORT ).show() ;
     }
 
     public void ClipC(View view)
@@ -102,6 +113,41 @@ public class ChatHeadService extends Service
         });
     }*/
 
+    private void storeScreenshot(Bitmap bitmap)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy '-' HH:mm:ss");
+        String currentDateandTime = sdf.format(new Date());
+        String filename = "ScreenShot - " + currentDateandTime ;
+        file = new File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/ScreenShots",
+                filename + ".jpg");
+        OutputStream out = null;
 
+        try {
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
 
+            try {
+                if (out != null) {
+                    out.close();
+                }
+
+            } catch (Exception exc) {
+            }
+
+        }
+        Log.e("STORAGE",file.toString());
+        galleryAddPic();
+    }
+
+    private void galleryAddPic()
+    {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(file);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
 }
