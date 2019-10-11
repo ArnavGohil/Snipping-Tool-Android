@@ -78,20 +78,26 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
             if (Settings.canDrawOverlays(this)) {
                 startService();
+            } else {
+                Toast.makeText(this, "Overlay permission is needed to take ScreenShots", Toast.LENGTH_LONG).show();
+                this.finishAndRemoveTask();
             }
         }
         if (requestCode == REQUEST_SCREENSHOT) {
             if (resultCode == RESULT_OK) {
                 Intent i =
-                        new Intent(this, ChatHeadService.class)
-                                .putExtra(ChatHeadService.EXTRA_RESULT_CODE, resultCode)
-                                .putExtra(ChatHeadService.EXTRA_RESULT_INTENT, data);
+                        new Intent(this, ScreenshotService.class)
+                                .putExtra(ScreenshotService.EXTRA_RESULT_CODE, resultCode)
+                                .putExtra(ScreenshotService.EXTRA_RESULT_INTENT, data);
 
+                this.finishAndRemoveTask();
                 startService(i);
+            } else {
+                Toast.makeText(this, "Permission is needed to take ScreenShots", Toast.LENGTH_LONG).show();
+                this.finishAndRemoveTask();
             }
         }
 
-        finish();
     }
 
     private void startService() {

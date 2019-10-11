@@ -28,7 +28,7 @@ import java.util.Date;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
-public class ChatHeadService extends Service {
+public class ScreenshotService extends Service {
 
     private WindowManager windowManager;
     WindowManager.LayoutParams params;
@@ -103,7 +103,7 @@ public class ChatHeadService extends Service {
             public void run() {
                 startCapture();
                 Toast.makeText(getApplicationContext(), "Screenshot Captured", Toast.LENGTH_SHORT).show();
-                stopService(new Intent(getApplicationContext(), ChatHeadService.class));
+                stopService(new Intent(getApplicationContext(), ScreenshotService.class));
             }
         }, 100);
 
@@ -114,7 +114,7 @@ public class ChatHeadService extends Service {
     }
 
     public void CloseC(View view) {
-        stopService(new Intent(getApplicationContext(), ChatHeadService.class));
+        stopService(new Intent(getApplicationContext(), ScreenshotService.class));
     }
 
 

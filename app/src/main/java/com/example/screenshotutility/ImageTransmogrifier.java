@@ -15,10 +15,10 @@ public class ImageTransmogrifier implements ImageReader.OnImageAvailableListener
     private final int width;
     private final int height;
     private final ImageReader imageReader;
-    private final ChatHeadService svc;
+    private final ScreenshotService svc;
     private Bitmap latestBitmap = null;
 
-    ImageTransmogrifier(ChatHeadService svc) {
+    ImageTransmogrifier(ScreenshotService svc) {
         this.svc = svc;
 
         Display display = svc.getWindowManager().getDefaultDisplay();
