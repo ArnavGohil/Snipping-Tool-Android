@@ -9,9 +9,8 @@
     android:layout_height="match_parent">
 
 
-    <!-- TODO -->
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="300dp"
         android:layout_height="600dp"
         android:background="#50000000"
@@ -61,25 +60,52 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="110dp"
-        android:background="@layout/button_shape_center"
-        android:src="@drawable/ic_camera"
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <ImageView
-        android:id="@+id/cross"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:onClick="CloseC"
-        android:src="@drawable/cross"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
-        app:layout_constraintStart_toEndOf="@+id/imageButton" />
+        <!--
+            <ImageView
+                android:id="@+id/move"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:onClick="MoveC"
+                android:src="@drawable/move" />
+        -->
+
+        <Button
+            android:id="@+id/full"
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="@layout/button_shape_left"
+            android:onClick="FullC"
+            android:text="Full \n SCREEN"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/clip"
+            android:layout_width="100dp"
+            android:layout_height="55dp"
+            android:background="@layout/button_shape_right"
+            android:onClick="ClipC"
+            android:text="clip \n SCREEN"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/cross"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:onClick="CloseC"
+            android:src="@drawable/cross" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

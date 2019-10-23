@@ -58,7 +58,7 @@ public class ScreenshotService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        myView = li.inflate(R.layout.linear_disp, null);
+        myView = li.inflate(R.layout.linear_clip_disp, null);
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -67,9 +67,7 @@ public class ScreenshotService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-        params.x = 0;
-        params.y = 100;
+        params.gravity = Gravity.CENTER;
 
         windowManager.addView(myView, params);
 
@@ -110,7 +108,8 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
-        Toast.makeText(getApplicationContext(), "Button 2", Toast.LENGTH_SHORT).show();
+        // FIXME ;
+        Toast.makeText(this, "Clip Button", Toast.LENGTH_SHORT).show();
     }
 
     public void CloseC(View view) {
