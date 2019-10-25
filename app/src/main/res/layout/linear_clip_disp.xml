@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/lt"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/lt"
@@ -28,6 +28,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/rt"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/rt"
@@ -35,6 +36,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/lb"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/lb"
@@ -42,6 +44,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
+            android:id="@+id/rb"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/rb"
@@ -69,14 +72,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!--
             <ImageView
                 android:id="@+id/move"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:onClick="MoveC"
                 android:src="@drawable/move" />
-        -->
 
         <Button
             android:id="@+id/full"

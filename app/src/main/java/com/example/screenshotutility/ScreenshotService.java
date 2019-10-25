@@ -16,8 +16,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -76,6 +79,59 @@ public class ScreenshotService extends Service {
 
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
+
+        ImageView lt = myView.findViewById(R.id.lt), rt = myView.findViewById(R.id.rt) , lb = myView.findViewById(R.id.lb) , rb = myView.findViewById(R.id.lt) ;
+
+        //Left Top
+        lt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action)
+                {
+//                    case MotionEvent.ACTION_DOWN :
+//                        break;
+//                    case MotionEvent.ACTION_UP :
+//                        break;
+//                    case MotionEvent.ACTION_DOWN :
+//                        break;
+//                    case MotionEvent.ACTION_DOWN :
+//                        break;
+                }
+                return false;
+            }
+        });
+
+        //Right Top
+        rt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                Log.e("ACTION ", this.toString() + "onTouch: " + event.toString() );
+                return false;
+            }
+        });
+
+        //Left Bottom
+        lb.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                Log.e("ACTION ", this.toString() + "onTouch: " + event.toString() );
+                return false;
+            }
+        });
+
+
+        //Right Bottom
+        rb.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                Log.e("ACTION ", this.toString() + "onTouch: " + event.toString() );
+                return false;
+            }
+        });
 
 
     }
@@ -175,9 +231,9 @@ public class ScreenshotService extends Service {
         projection.registerCallback(cb, handler);
     }
 
-   /* public void MoveC(View view)
+    public void MoveC(View view)
     {
-        Toast.makeText(getApplicationContext() , "Pressed Button for Movement" , Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext() , "Movement Unlocked" , Toast.LENGTH_SHORT).show();
         view.setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
             private int initialY;
@@ -193,8 +249,6 @@ public class ScreenshotService extends Service {
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         return true;
-                    case MotionEvent.ACTION_UP:
-                        return true;
                     case MotionEvent.ACTION_MOVE:
                         params.x = initialX
                                 + (int) (event.getRawX() - initialTouchX);
@@ -206,7 +260,7 @@ public class ScreenshotService extends Service {
                 return false;
             }
         });
-    }*/
+    }
 
     public void storeScreenshot(Bitmap bitmap) {
         stopCapture();
