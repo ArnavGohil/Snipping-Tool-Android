@@ -20,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.io.File;
@@ -33,10 +32,10 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class ScreenshotService extends Service {
 
-    private WindowManager windowManager;
-    WindowManager.LayoutParams params;
+    private WindowManager windowManager , constr;
+    WindowManager.LayoutParams params , ConParams ;
     LayoutInflater li;
-    View myView;
+    View myView , cons ;
     File file;
 
     static final String EXTRA_RESULT_CODE = "resultCode";
@@ -59,9 +58,11 @@ public class ScreenshotService extends Service {
         super.onCreate();
 
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        constr = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        myView = li.inflate(R.layout.linear_clip_disp, null);
+        myView = li.inflate(R.layout.linear_disp, null);
+        cons = li.inflate(R.layout.linear_clip_disp , null ) ;
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -70,8 +71,17 @@ public class ScreenshotService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.CENTER;
+        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM ;
+        params.y = 300 ;
 
+        ConParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+
+        ConParams.gravity = Gravity.CENTER ;
+
+        constr.addView(cons , ConParams );
         windowManager.addView(myView, params);
 
         mgr = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
@@ -80,68 +90,16 @@ public class ScreenshotService extends Service {
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
 
-        ImageView lt = myView.findViewById(R.id.lt), rt = myView.findViewById(R.id.rt) , lb = myView.findViewById(R.id.lb) , rb = myView.findViewById(R.id.lt) ;
-
-        //Left Top
-        lt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                switch (action)
-                {
-//                    case MotionEvent.ACTION_DOWN :
-//                        break;
-//                    case MotionEvent.ACTION_UP :
-//                        break;
-//                    case MotionEvent.ACTION_DOWN :
-//                        break;
-//                    case MotionEvent.ACTION_DOWN :
-//                        break;
-                }
-                return false;
-            }
-        });
-
-        //Right Top
-        rt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                Log.e("ACTION ", this.toString() + "onTouch: " + event.toString() );
-                return false;
-            }
-        });
-
-        //Left Bottom
-        lb.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                Log.e("ACTION ", this.toString() + "onTouch: " + event.toString() );
-                return false;
-            }
-        });
-
-
-        //Right Bottom
-        rb.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                int action = event.getAction();
-                Log.e("ACTION ", this.toString() + "onTouch: " + event.toString() );
-                return false;
-            }
-        });
-
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopCapture();
-        if (myView != null)
+        if (myView != null) {
             windowManager.removeView(myView);
+            constr.removeView(cons);
+        }
     }
 
     @Override
@@ -150,8 +108,12 @@ public class ScreenshotService extends Service {
         return null;
     }
 
+
+
+
     public void FullC(View view) {
         myView.setVisibility(View.INVISIBLE);
+        cons.setVisibility(View.INVISIBLE );
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -164,13 +126,78 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
-        // FIXME ;
-        Toast.makeText(this, "Clip Button", Toast.LENGTH_SHORT).show();
+        int y = cons.getHeight();
+        int x = cons.getWidth() ;
+        Toast.makeText(this, "Clip Button " + x + " " + y , Toast.LENGTH_SHORT).show();
+        //FIXME
     }
 
     public void CloseC(View view) {
         stopService(new Intent(getApplicationContext(), ScreenshotService.class));
     }
+
+    public void lt(final View view)
+    {
+        Toast.makeText(getApplicationContext() , "Slide to resize" , Toast.LENGTH_SHORT).show();
+        view.setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
+            private int initialY;
+            private float initialTouchX;
+            private float initialTouchY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialX = (int) view.getX();
+                        initialY = (int) view.getY();
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        ConParams.width =  initialX
+                                + (int) (event.getRawX() - initialTouchX);
+                        ConParams.height =  initialY
+                                + (int) (event.getRawY() - initialTouchY);
+                        constr.updateViewLayout(cons , ConParams);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    public void MoveC(View view)
+    {
+        Toast.makeText(getApplicationContext() , "Movement Unlocked" , Toast.LENGTH_SHORT).show();
+        view.setOnTouchListener(new View.OnTouchListener() {
+            private int initialX;
+            private int initialY;
+            private float initialTouchX;
+            private float initialTouchY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialX = ConParams.x;
+                        initialY = ConParams.y;
+                        initialTouchX = event.getRawX();
+                        initialTouchY = event.getRawY();
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        ConParams.x = initialX
+                                + (int) (event.getRawX() - initialTouchX);
+                        ConParams.y = initialY
+                                + (int) (event.getRawY() - initialTouchY);
+                        constr.updateViewLayout(cons , ConParams);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
 
 
     @Override
@@ -229,37 +256,6 @@ public class ScreenshotService extends Service {
                 getResources().getDisplayMetrics().densityDpi,
                 VIRT_DISPLAY_FLAGS, it.getSurface(), null, handler);
         projection.registerCallback(cb, handler);
-    }
-
-    public void MoveC(View view)
-    {
-        Toast.makeText(getApplicationContext() , "Movement Unlocked" , Toast.LENGTH_SHORT).show();
-        view.setOnTouchListener(new View.OnTouchListener() {
-            private int initialX;
-            private int initialY;
-            private float initialTouchX;
-            private float initialTouchY;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        initialX = params.x;
-                        initialY = params.y;
-                        initialTouchX = event.getRawX();
-                        initialTouchY = event.getRawY();
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        params.x = initialX
-                                + (int) (event.getRawX() - initialTouchX);
-                        params.y = initialY
-                                + (int) (event.getRawY() - initialTouchY);
-                        windowManager.updateViewLayout(myView, params);
-                        return true;
-                }
-                return false;
-            }
-        });
     }
 
     public void storeScreenshot(Bitmap bitmap) {
