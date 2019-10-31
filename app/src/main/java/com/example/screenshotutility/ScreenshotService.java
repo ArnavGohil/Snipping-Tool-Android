@@ -51,6 +51,7 @@ public class ScreenshotService extends Service {
     private ImageTransmogrifier it;
     private int resultCode;
     private Intent resultData;
+
     boolean flag = true ;
     /*
     * TRUE - Full Screen
@@ -130,14 +131,9 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
-        int height = cons.getHeight();
-        int width = cons.getWidth() ;
-        int startX = (int) cons.getX();
-        int startY = (int) cons.getY();
         Toast.makeText(this, getStatusBarHeight() + "" , Toast.LENGTH_SHORT).show();
-        //FIXME
-        // flag = false ;
-       /* myView.setVisibility(View.INVISIBLE);
+        flag = false ;
+        myView.setVisibility(View.INVISIBLE);
         cons.setVisibility(View.INVISIBLE );
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -147,7 +143,6 @@ public class ScreenshotService extends Service {
                 stopService(new Intent(getApplicationContext(), ScreenshotService.class));
             }
         }, 100);
-*/
     }
 
     public void CloseC(View view) {
@@ -270,7 +265,6 @@ public class ScreenshotService extends Service {
             }
         };
 
-        if (flag)
             vdisplay = projection.createVirtualDisplay("andshooter",
                 it.getWidth(), it.getHeight(),
                 getResources().getDisplayMetrics().densityDpi,
@@ -298,8 +292,8 @@ public class ScreenshotService extends Service {
         OutputStream out = null;
 
 //        FIXME
-//        if (!flag)
-                bitmap = Bitmap.createBitmap(bitmap ,(int) cons.getLeft() ,(int) cons.getTop() + getStatusBarHeight() , 600 , 600 ) ;
+        if (!flag)
+                bitmap = Bitmap.createBitmap(bitmap ,(int) cons.getX() ,(int) cons.getY() + getStatusBarHeight() , cons.getWidth() , cons.getHeight() ) ;
 
         try {
             out = new FileOutputStream(file);
