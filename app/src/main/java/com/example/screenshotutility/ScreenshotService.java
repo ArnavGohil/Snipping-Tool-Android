@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -52,6 +51,11 @@ public class ScreenshotService extends Service {
     private ImageTransmogrifier it;
     private int resultCode;
     private Intent resultData;
+    boolean flag = true ;
+    /*
+    * TRUE - Full Screen
+    * FALSE - CLIP SCREEN
+    */
 
     @Override
     public void onCreate() {
@@ -126,10 +130,24 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
-        int y = cons.getHeight();
-        int x = cons.getWidth() ;
-        Toast.makeText(this, "Clip Button " + x + " " + y , Toast.LENGTH_SHORT).show();
+        int height = cons.getHeight();
+        int width = cons.getWidth() ;
+        int startX = (int) cons.getX();
+        int startY = (int) cons.getY();
+        Toast.makeText(this, getStatusBarHeight() + "" , Toast.LENGTH_SHORT).show();
         //FIXME
+        // flag = false ;
+       /* myView.setVisibility(View.INVISIBLE);
+        cons.setVisibility(View.INVISIBLE );
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startCapture();
+                Toast.makeText(getApplicationContext(), "Screenshot Captured", Toast.LENGTH_SHORT).show();
+                stopService(new Intent(getApplicationContext(), ScreenshotService.class));
+            }
+        }, 100);
+*/
     }
 
     public void CloseC(View view) {
@@ -159,7 +177,8 @@ public class ScreenshotService extends Service {
                                 + (int) (event.getRawX() - initialTouchX);
                         ConParams.height =  initialY
                                 + (int) (event.getRawY() - initialTouchY);
-                        constr.updateViewLayout(cons , ConParams);
+                        if ( ConParams.height >= 0 && ConParams.width >= 0)
+                            constr.updateViewLayout(cons , ConParams);
                         return true;
                 }
                 return false;
@@ -251,11 +270,22 @@ public class ScreenshotService extends Service {
             }
         };
 
-        vdisplay = projection.createVirtualDisplay("andshooter",
+        if (flag)
+            vdisplay = projection.createVirtualDisplay("andshooter",
                 it.getWidth(), it.getHeight(),
                 getResources().getDisplayMetrics().densityDpi,
                 VIRT_DISPLAY_FLAGS, it.getSurface(), null, handler);
+
         projection.registerCallback(cb, handler);
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     public void storeScreenshot(Bitmap bitmap) {
@@ -267,8 +297,13 @@ public class ScreenshotService extends Service {
                 filename + ".jpg");
         OutputStream out = null;
 
+//        FIXME
+//        if (!flag)
+                bitmap = Bitmap.createBitmap(bitmap ,(int) cons.getLeft() ,(int) cons.getTop() + getStatusBarHeight() , 600 , 600 ) ;
+
         try {
             out = new FileOutputStream(file);
+
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
         } catch (Exception e) {
