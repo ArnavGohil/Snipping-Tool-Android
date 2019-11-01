@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class ScreenshotService extends Service {
     LayoutInflater li;
     View myView , cons ;
     File file;
+    int X , Y ;
 
     static final String EXTRA_RESULT_CODE = "resultCode";
     static final String EXTRA_RESULT_INTENT = "resultIntent";
@@ -80,6 +82,8 @@ public class ScreenshotService extends Service {
         params.y = 300 ;
 
         ConParams = new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
@@ -131,8 +135,11 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
-        Toast.makeText(this, getStatusBarHeight() + "" , Toast.LENGTH_SHORT).show();
         flag = false ;
+        int[] array = new int[2] ;
+        cons.getLocationOnScreen(array);
+        X = array[0] ;
+        Y = array[1] ;
         myView.setVisibility(View.INVISIBLE);
         cons.setVisibility(View.INVISIBLE );
         new Handler().postDelayed(new Runnable() {
@@ -273,14 +280,6 @@ public class ScreenshotService extends Service {
         projection.registerCallback(cb, handler);
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
 
     public void storeScreenshot(Bitmap bitmap) {
         stopCapture();
@@ -291,9 +290,8 @@ public class ScreenshotService extends Service {
                 filename + ".jpg");
         OutputStream out = null;
 
-//        FIXME
         if (!flag)
-                bitmap = Bitmap.createBitmap(bitmap ,(int) cons.getX() ,(int) cons.getY() + getStatusBarHeight() , cons.getWidth() , cons.getHeight() ) ;
+                bitmap = Bitmap.createBitmap(bitmap , X , Y , cons.getWidth() , cons.getHeight() ) ;
 
         try {
             out = new FileOutputStream(file);
