@@ -164,13 +164,16 @@ public class ScreenshotService extends Service {
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
-
+            int[] array = new int[2] ;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        initialX = (int) view.getX();
-                        initialY = (int) view.getY();
+                        view.getLocationOnScreen(array);
+                        X = array[0] ;
+                        Y = array[1] ;
+                        initialX =  X;
+                        initialY =  Y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         return true;
