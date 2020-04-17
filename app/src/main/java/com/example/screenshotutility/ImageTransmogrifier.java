@@ -8,7 +8,6 @@ import android.media.ImageReader;
 import android.view.Display;
 import android.view.Surface;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 public class ImageTransmogrifier implements ImageReader.OnImageAvailableListener {
@@ -71,7 +70,6 @@ public class ImageTransmogrifier implements ImageReader.OnImageAvailableListener
                 image.close();
             }
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Bitmap cropped = Bitmap.createBitmap(latestBitmap, 0, 0,
                     width, height);
 
