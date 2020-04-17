@@ -32,12 +32,12 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class ScreenshotService extends Service {
 
-    private WindowManager windowManager , constr;
-    WindowManager.LayoutParams params , ConParams ;
+    private WindowManager windowManager, constr;
+    WindowManager.LayoutParams params, ConParams;
     LayoutInflater li;
-    View myView , cons ;
+    View myView, cons;
     File file;
-    int X , Y ;
+    int X, Y;
 
     static final String EXTRA_RESULT_CODE = "resultCode";
     static final String EXTRA_RESULT_INTENT = "resultIntent";
@@ -54,11 +54,11 @@ public class ScreenshotService extends Service {
     private int resultCode;
     private Intent resultData;
 
-    boolean flag = true ;
+    boolean flag = true;
     /*
-    * TRUE - Full Screen
-    * FALSE - CLIP SCREEN
-    */
+     * TRUE - Full Screen
+     * FALSE - CLIP SCREEN
+     */
 
     @Override
     public void onCreate() {
@@ -69,7 +69,7 @@ public class ScreenshotService extends Service {
 
         li = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         myView = li.inflate(R.layout.linear_disp, null);
-        cons = li.inflate(R.layout.linear_clip_disp , null ) ;
+        cons = li.inflate(R.layout.linear_clip_disp, null);
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -78,8 +78,8 @@ public class ScreenshotService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM ;
-        params.y = 300 ;
+        params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+        params.y = 300;
 
         ConParams = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -88,9 +88,9 @@ public class ScreenshotService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        ConParams.gravity = Gravity.CENTER ;
+        ConParams.gravity = Gravity.CENTER;
 
-        constr.addView(cons , ConParams );
+        constr.addView(cons, ConParams);
         windowManager.addView(myView, params);
 
         mgr = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
@@ -118,11 +118,9 @@ public class ScreenshotService extends Service {
     }
 
 
-
-
     public void FullC(View view) {
         myView.setVisibility(View.INVISIBLE);
-        cons.setVisibility(View.INVISIBLE );
+        cons.setVisibility(View.INVISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -135,13 +133,13 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
-        flag = false ;
-        int[] array = new int[2] ;
+        flag = false;
+        int[] array = new int[2];
         cons.getLocationOnScreen(array);
-        X = array[0] ;
-        Y = array[1] ;
+        X = array[0];
+        Y = array[1];
         myView.setVisibility(View.INVISIBLE);
-        cons.setVisibility(View.INVISIBLE );
+        cons.setVisibility(View.INVISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -156,34 +154,34 @@ public class ScreenshotService extends Service {
         stopService(new Intent(getApplicationContext(), ScreenshotService.class));
     }
 
-    public void lt(final View view)
-    {
-        Toast.makeText(getApplicationContext() , "Slide to resize" , Toast.LENGTH_SHORT).show();
+    public void lt(final View view) {
+        Toast.makeText(getApplicationContext(), "Slide to resize", Toast.LENGTH_SHORT).show();
         view.setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
-            int[] array = new int[2] ;
+            int[] array = new int[2];
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         view.getLocationOnScreen(array);
-                        X = array[0] ;
-                        Y = array[1] ;
-                        initialX =  X;
-                        initialY =  Y;
+                        X = array[0];
+                        Y = array[1];
+                        initialX = X;
+                        initialY = Y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         return true;
                     case MotionEvent.ACTION_MOVE:
-                        ConParams.width =  initialX
+                        ConParams.width = initialX
                                 + (int) (event.getRawX() - initialTouchX);
-                        ConParams.height =  initialY
+                        ConParams.height = initialY
                                 + (int) (event.getRawY() - initialTouchY);
-                        if ( ConParams.height >= 0 && ConParams.width >= 0)
-                            constr.updateViewLayout(cons , ConParams);
+                        if (ConParams.height >= 0 && ConParams.width >= 0)
+                            constr.updateViewLayout(cons, ConParams);
                         return true;
                 }
                 return false;
@@ -191,9 +189,8 @@ public class ScreenshotService extends Service {
         });
     }
 
-    public void MoveC(View view)
-    {
-        Toast.makeText(getApplicationContext() , "Movement Unlocked" , Toast.LENGTH_SHORT).show();
+    public void MoveC(View view) {
+        Toast.makeText(getApplicationContext(), "Movement Unlocked", Toast.LENGTH_SHORT).show();
         view.setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
             private int initialY;
@@ -214,14 +211,13 @@ public class ScreenshotService extends Service {
                                 + (int) (event.getRawX() - initialTouchX);
                         ConParams.y = initialY
                                 + (int) (event.getRawY() - initialTouchY);
-                        constr.updateViewLayout(cons , ConParams);
+                        constr.updateViewLayout(cons, ConParams);
                         return true;
                 }
                 return false;
             }
         });
     }
-
 
 
     @Override
@@ -275,7 +271,7 @@ public class ScreenshotService extends Service {
             }
         };
 
-            vdisplay = projection.createVirtualDisplay("andshooter",
+        vdisplay = projection.createVirtualDisplay("andshooter",
                 it.getWidth(), it.getHeight(),
                 getResources().getDisplayMetrics().densityDpi,
                 VIRT_DISPLAY_FLAGS, it.getSurface(), null, handler);
@@ -294,7 +290,7 @@ public class ScreenshotService extends Service {
         OutputStream out = null;
 
         if (!flag)
-                bitmap = Bitmap.createBitmap(bitmap , X , Y , cons.getWidth() , cons.getHeight() ) ;
+            bitmap = Bitmap.createBitmap(bitmap, X, Y, cons.getWidth(), cons.getHeight());
 
         try {
             out = new FileOutputStream(file);
