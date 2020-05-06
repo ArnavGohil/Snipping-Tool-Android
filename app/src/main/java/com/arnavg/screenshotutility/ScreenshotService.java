@@ -90,6 +90,7 @@ public class ScreenshotService extends Service {
 
         constr.addView(cons, ConParams);
         windowManager.addView(myView, params);
+        cons.setVisibility(View.INVISIBLE);
 
         mgr = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         wmgr = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -131,6 +132,11 @@ public class ScreenshotService extends Service {
     }
 
     public void ClipC(View view) {
+        if(cons.getVisibility() == View.INVISIBLE ) {
+            cons.setVisibility(View.VISIBLE);
+            Toast.makeText(this, "Select the Area", Toast.LENGTH_SHORT).show();
+            return;
+        }
         flag = false;
         int[] array = new int[2];
         cons.getLocationOnScreen(array);
