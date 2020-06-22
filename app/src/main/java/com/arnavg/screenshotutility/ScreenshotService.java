@@ -50,7 +50,6 @@ public class ScreenshotService extends Service {
     private Handler handler;
     private MediaProjectionManager mgr;
     private WindowManager wmgr;
-    private ImageTransmogrifier it;
     private int resultCode;
     private Intent resultData;
     /*
@@ -112,7 +111,6 @@ public class ScreenshotService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -120,13 +118,10 @@ public class ScreenshotService extends Service {
     public void FullC(View view) {
         myView.setVisibility(View.INVISIBLE);
         cons.setVisibility(View.INVISIBLE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startCapture();
-                Toast.makeText(getApplicationContext(), "Screenshot Captured", Toast.LENGTH_SHORT).show();
-                stopService(new Intent(getApplicationContext(), ScreenshotService.class));
-            }
+        new Handler().postDelayed(() -> {
+            startCapture();
+            Toast.makeText(getApplicationContext(), "Screenshot Captured", Toast.LENGTH_SHORT).show();
+            stopService(new Intent(getApplicationContext(), ScreenshotService.class));
         }, 100);
 
     }
@@ -144,13 +139,10 @@ public class ScreenshotService extends Service {
         Y = array[1];
         myView.setVisibility(View.INVISIBLE);
         cons.setVisibility(View.INVISIBLE);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startCapture();
-                Toast.makeText(getApplicationContext(), "Screenshot Captured", Toast.LENGTH_SHORT).show();
-                stopService(new Intent(getApplicationContext(), ScreenshotService.class));
-            }
+        new Handler().postDelayed(() -> {
+            startCapture();
+            Toast.makeText(getApplicationContext(), "Screenshot Captured", Toast.LENGTH_SHORT).show();
+            stopService(new Intent(getApplicationContext(), ScreenshotService.class));
         }, 100);
     }
 
@@ -266,7 +258,7 @@ public class ScreenshotService extends Service {
 
     private void startCapture() {
         projection = mgr.getMediaProjection(resultCode, resultData);
-        it = new ImageTransmogrifier(this);
+        ImageTransmogrifier it = new ImageTransmogrifier(this);
 
         MediaProjection.Callback cb = new MediaProjection.Callback() {
             @Override
@@ -291,28 +283,15 @@ public class ScreenshotService extends Service {
         String filename = "ScreenShot - " + currentDateandTime;
         file = new File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Screenshots",
                 filename + ".jpg");
-        OutputStream out = null;
 
         if (!flag)
             bitmap = Bitmap.createBitmap(bitmap, X, Y, cons.getWidth(), cons.getHeight());
-
-        try {
-            out = new FileOutputStream(file);
+        try (OutputStream out = new FileOutputStream(file)) {
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-
-            try {
-                if (out != null) {
-                    out.close();
-                }
-
-            } catch (Exception exc) {
-            }
-
         }
         Log.e("STORAGE", file.toString());
         galleryAddPic();
