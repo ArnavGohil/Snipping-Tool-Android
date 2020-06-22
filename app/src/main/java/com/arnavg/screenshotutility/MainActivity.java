@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String folder_main = "Snip ScreenShots";
+        String folder_main = "Screenshots";
 
 
         File f = new File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), folder_main);

@@ -289,7 +289,7 @@ public class ScreenshotService extends Service {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy '-' HH:mm:ss");
         String currentDateandTime = sdf.format(new Date());
         String filename = "ScreenShot - " + currentDateandTime;
-        file = new File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/ScreenShots",
+        file = new File(getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Screenshots",
                 filename + ".jpg");
         OutputStream out = null;
 
