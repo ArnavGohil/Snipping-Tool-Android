@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -56,7 +58,8 @@ public class ScreenshotService extends Service {
      * TRUE - Full Screen
      * FALSE - CLIP SCREEN
      */
-
+    private int width;
+    private int height;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -96,6 +99,21 @@ public class ScreenshotService extends Service {
 
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+
+        display.getRealSize(size);
+
+        //For Normal Mobile .
+         width = size.x;
+         height = size.y;
+
+        if (MainActivity.DeX) {
+            //For Dex Mode .
+            width = 1920;
+            height = 1080;
+        }
 
     }
 
@@ -158,7 +176,6 @@ public class ScreenshotService extends Service {
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -168,15 +185,15 @@ public class ScreenshotService extends Service {
                         Y = array[1];
                         initialX = X;
                         initialY = Y;
-                        initialTouchX = event.getRawX();
-                        initialTouchY = event.getRawY();
+                        initialTouchX =  width ;
+                        initialTouchY =  height ;
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         ConParams.width = initialX
                                 + (int) (event.getRawX() - initialTouchX);
                         ConParams.height = initialY
-                                + (int) (event.getRawY() - initialTouchY);
-                        if (ConParams.height >= 0 && ConParams.width >= 0)
+                                - (int) (event.getRawY() - initialTouchY);
+                        if (ConParams.height >= 0 && ConParams.width >= 0 && ConParams.height <= height  && ConParams.width <= width)
                             constr.updateViewLayout(cons, ConParams);
                         return true;
                 }
